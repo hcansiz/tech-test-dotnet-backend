@@ -17,27 +17,44 @@ namespace Moonpig.PostOffice.Services
 
         public DateTime CalculateDespatchDate(List<int> productIds, DateTime orderDate)
         {
+            if (productIds == null || !productIds.Any())
+                throw new ArgumentException("At least one product must be specified", nameof(productIds));
+
+            var maxLeadTime = GetMaxLeadTime(productIds, orderDate);
+
+            return HandleMoonpigWeekendClosure(maxLeadTime);
+        }
+
+        private DateTime GetMaxLeadTime(List<int> productIds, DateTime orderDate)
+        {
             DateTime maxLeadTime = orderDate;
 
             foreach (var productId in productIds)
             {
-                var supplierId = _dbContext.Products.Single(x => x.ProductId == productId).SupplierId;
-                var leadTime = _dbContext.Suppliers.Single(x => x.SupplierId == supplierId).LeadTime;
+                var product = _dbContext.Products.SingleOrDefault(x => x.ProductId == productId);
+                if (product == null)
+                    throw new ArgumentException($"Product with ID {productId} is not available", nameof(productIds));
+
+                var supplier = _dbContext.Suppliers.SingleOrDefault(x => x.SupplierId == product.SupplierId);
+                if (supplier == null)
+                    throw new ArgumentException($"Product with ID {productId} is currently unavailable", nameof(productIds));
+
+                var leadTime = supplier.LeadTime;
 
                 if (orderDate.AddDays(leadTime) > maxLeadTime)
                     maxLeadTime = orderDate.AddDays(leadTime);
             }
 
-            return HandleMoonpigWeekendClosure(maxLeadTime);
+            return maxLeadTime;
         }
 
-        private DateTime HandleMoonpigWeekendClosure(DateTime arrivalDate)
+        private DateTime HandleMoonpigWeekendClosure(DateTime maxLeadTime)
         {
-            return arrivalDate.DayOfWeek switch
+            return maxLeadTime.DayOfWeek switch
             {
-                DayOfWeek.Saturday => arrivalDate.AddDays(2), // Saturday -> Monday
-                DayOfWeek.Sunday => arrivalDate.AddDays(1),   // Sunday -> Monday
-                _ => arrivalDate                              // Weekday, no adjustment needed
+                DayOfWeek.Saturday => maxLeadTime.AddDays(2), // Saturday -> Monday
+                DayOfWeek.Sunday => maxLeadTime.AddDays(1),   // Sunday -> Monday
+                _ => maxLeadTime                              // Weekday, no adjustment needed
             };
         }
     }
