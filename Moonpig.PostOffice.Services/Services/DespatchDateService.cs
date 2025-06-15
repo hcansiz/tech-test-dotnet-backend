@@ -28,18 +28,17 @@ namespace Moonpig.PostOffice.Services
                     maxLeadTime = orderDate.AddDays(leadTime);
             }
 
-            if (maxLeadTime.DayOfWeek == DayOfWeek.Saturday)
+            return HandleMoonpigWeekendClosure(maxLeadTime);
+        }
+
+        private DateTime HandleMoonpigWeekendClosure(DateTime arrivalDate)
+        {
+            return arrivalDate.DayOfWeek switch
             {
-                return maxLeadTime.AddDays(2);
-            }
-            else if (maxLeadTime.DayOfWeek == DayOfWeek.Sunday)
-            {
-                return maxLeadTime.AddDays(1);
-            }
-            else
-            {
-                return maxLeadTime;
-            }
+                DayOfWeek.Saturday => arrivalDate.AddDays(2), // Saturday -> Monday
+                DayOfWeek.Sunday => arrivalDate.AddDays(1),   // Sunday -> Monday
+                _ => arrivalDate                              // Weekday, no adjustment needed
+            };
         }
     }
 }
