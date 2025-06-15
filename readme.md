@@ -100,12 +100,39 @@ document.
 Q1. What 'code smells' / anti-patterns did you find in the existing 
 	implementation of part 1 & 2?
 
+**Answer:**
+- DbContext created in every loop iteration (performance issue)
+- Poor variable naming (`_mlt` was cryptic)
+- No error handling for invalid product IDs
+- Magic numbers (AddDays(2), AddDays(1)) without explanation
+- No dependency injection (controller creates dependencies directly)
+- Weekend logic mixed with business logic (hard to test and modify)
+- No service layer (business logic in controller)
+
 Q2. What best practices have you used while implementing your solution?
+
+**Answer:**
+- Added service layer with dependency injection for better separation of concerns
+- Added error handling with user-friendly API error messages
+- Extracted methods with single responsibilities (weekend handling, lead time calculation)
+- Added extensive unit tests covering all scenarios and edge cases
+- Used meaningful variable and method names
+- Added documentation for all methods
+- Tried to follow SOLID principles throughout the codebase
 
 Q3. What further steps would you take to improve the solution given more time?
 
+**Answer:**
+- Inject IDbContext into service for better testability and mocking
+- Add logging for debugging and monitoring
+- Add API versioning and OpenAPI documentation
+- Add integration tests for the full API endpoint
+
 Q4. What's a technology that you're excited about and where do you see this 
     being applicable? (Your answer does not have to be related to this problem)
+
+**Answer:**
+I'm excited about AI-assisted development tools like GitHub Copilot, Cursor, Claude Code etc. They're transforming how we write code by providing intelligent suggestions and helping with repetitive tasks. For a service like this, these tools could help generate comprehensive unit tests, suggest edge cases we might miss, and help refactor code more efficiently. It's making developers more productive while maintaining code quality.
 
 ## Request and Response Examples
 
