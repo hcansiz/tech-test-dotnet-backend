@@ -11,9 +11,9 @@
     {
         private readonly IDespatchDateService _despatchDateService;
 
-        public DespatchDateController()
+        public DespatchDateController(IDespatchDateService despatchDateService)
         {
-            _despatchDateService = new Services.DespatchDateService();
+            _despatchDateService = despatchDateService;
         }
 
         [HttpGet]

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Moonpig.PostOffice.Api\Moonpig.PostOffice.Api.csproj" />
+    <ProjectReference Include="..\Moonpig.PostOffice.Services\Moonpig.PostOffice.Services.csproj" />
   </ItemGroup>
 
 </Project>
