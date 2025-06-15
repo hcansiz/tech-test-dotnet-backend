@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Moonpig.PostOffice.Data\Moonpig.PostOffice.Data.csproj" />
+    <ProjectReference Include="..\Moonpig.PostOffice.Services\Moonpig.PostOffice.Services.csproj" />
   </ItemGroup>
 
 </Project>

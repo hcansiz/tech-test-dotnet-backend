@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Moonpig.PostOffice.Data\Moonpig.PostOffice.Data.csproj" />
+  </ItemGroup>
+
 </Project>
