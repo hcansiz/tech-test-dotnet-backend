@@ -63,7 +63,7 @@
         [Fact]
         public void ThrowsExceptionWhenProductIdsIsNull()
         {
-            var exception = Should.Throw<ArgumentException>(() => 
+            var exception = Should.Throw<ArgumentException>(() =>
                 _despatchDateService.CalculateDespatchDate(null, DateTime.Now));
             exception.Message.ShouldStartWith("At least one product must be specified");
         }
@@ -74,7 +74,7 @@
         [Fact]
         public void ThrowsExceptionWhenProductIdsIsEmpty()
         {
-            var exception = Should.Throw<ArgumentException>(() => 
+            var exception = Should.Throw<ArgumentException>(() =>
                 _despatchDateService.CalculateDespatchDate(new List<int>(), DateTime.Now));
             exception.Message.ShouldStartWith("At least one product must be specified");
         }
@@ -85,7 +85,7 @@
         [Fact]
         public void ThrowsExceptionWhenProductIdNotFound()
         {
-            var exception = Should.Throw<ArgumentException>(() => 
+            var exception = Should.Throw<ArgumentException>(() =>
                 _despatchDateService.CalculateDespatchDate(new List<int> { 999 }, DateTime.Now));
             exception.Message.ShouldStartWith("Product with ID 999 is not available");
         }
@@ -96,8 +96,8 @@
         [Fact]
         public void ThrowsExceptionWhenSupplierNotFound()
         {
-            
-            var exception = Should.Throw<ArgumentException>(() => 
+
+            var exception = Should.Throw<ArgumentException>(() =>
                 _despatchDateService.CalculateDespatchDate(new List<int> { 8 }, DateTime.Now));
             exception.Message.ShouldStartWith("Product with ID 8 is currently unavailable");
         }
@@ -167,6 +167,28 @@
             // Product 1 = 1 day, Product 2 = 2 days, Product 3 = 3 days
             var result = _despatchDateService.CalculateDespatchDate(new List<int> { 1, 2, 3 }, orderDate);
             result.ShouldBe(new DateTime(2018, 1, 4)); // Thursday (3 working days)
+        }
+
+        /// <summary>
+        /// Verifies that an order on Friday with six-day lead time (Disney) is calculated correctly.
+        /// </summary>
+        [Fact]
+        public void OrderOnFridayWithSixDayLeadTimeCalculatesCorrectly()
+        {
+            var orderDate = new DateTime(2018, 1, 5); // Friday
+            var result = _despatchDateService.CalculateDespatchDate(new List<int> { 9 }, orderDate);
+            result.ShouldBe(new DateTime(2018, 1, 15));  // Monday (6 working days later)
+        }
+
+        /// <summary>
+        /// Verifies that an order on Friday with 13-day lead time (Tacky T-Shirts) is calculated correctly.
+        /// </summary>
+        [Fact]
+        public void OrderOnFridayWithThirteenDayLeadTimeCalculatesCorrectly()
+        {
+            var orderDate = new DateTime(2018, 1, 5); // Friday
+            var result = _despatchDateService.CalculateDespatchDate(new List<int> { 10 }, orderDate);
+            result.ShouldBe(new DateTime(2018, 1, 24)); // Wednesday (13 working days later)
         }
     }
 }
