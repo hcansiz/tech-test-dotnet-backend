@@ -70,21 +70,22 @@ namespace Moonpig.PostOffice.Services
         /// <returns></returns>
         private DateTime CalculateSupplierArrivalDate(DateTime orderDate, int leadTime)
         {
-            var currentDate = orderDate;
-            var workingDaysRemaining = leadTime;
-
-            while (workingDaysRemaining > 0)
+            var fullWeeks = leadTime / 5;
+            var remainingDays = leadTime % 5;
+            
+            var resultDate = orderDate.AddDays(fullWeeks * 7);
+            
+            while (remainingDays > 0)
             {
-                currentDate = currentDate.AddDays(1);
-
-                // Skip weekends - suppliers don't work on weekends
-                if (currentDate.DayOfWeek != DayOfWeek.Saturday && currentDate.DayOfWeek != DayOfWeek.Sunday)
+                resultDate = resultDate.AddDays(1);
+                if (resultDate.DayOfWeek != DayOfWeek.Saturday && 
+                    resultDate.DayOfWeek != DayOfWeek.Sunday)
                 {
-                    workingDaysRemaining--;
+                    remainingDays--;
                 }
             }
-
-            return currentDate;
+            
+            return resultDate;
         }
 
         /// <summary>
