@@ -38,6 +38,9 @@ namespace Moonpig.PostOffice.Tests
         // Multi-week lead times
         [InlineData("2018-01-05", new int[] { 9 }, "2018-01-15")]  // Friday + 6 working days = Monday
         [InlineData("2018-01-05", new int[] { 10 }, "2018-01-24")] // Friday + 13 working days = Wednesday
+
+        [InlineData("2018-03-12", new int[] { 1 }, "2018-03-14")] // Blocked date scenario 
+        [InlineData("2018-03-18", new int[] { 2 }, "2018-03-21")] // Blocked date scenario
         public void CalculateDespatchDate_ValidInputs_ReturnsCorrectDate(string orderDateStr, int[] productIds, string expectedDateStr)
         {
             var orderDate = DateTime.Parse(orderDateStr);

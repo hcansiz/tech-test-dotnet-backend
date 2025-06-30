@@ -2,6 +2,7 @@
 {
     using System.Linq;
     using System.Collections.Generic;
+    using System;
 
     public class DbContext : IDbContext
     {
@@ -15,13 +16,38 @@
                     {
                         SupplierId = 1,
                         Name = "Acme Corporation",
-                        LeadTime = 1
+                        LeadTime = 1,
+                        SupplierBlockedDays = new List<SupplierBlockedDay>()
+                        {
+                            new SupplierBlockedDay
+                            {
+                                SupplierId = 1,
+                                SupplierBlockedDayId = 1,
+                                Date = new DateTime(2018,03,13)
+                            },
+                            new SupplierBlockedDay
+                            {
+                                SupplierId = 1,
+                                SupplierBlockedDayId = 2,
+                                Date = new DateTime(2018,03,23)
+                            }
+                        }
+                        
                     },
                     new Supplier
                     {
                         SupplierId = 2,
                         Name = "Sunnyside Flowers",
-                        LeadTime = 2
+                        LeadTime = 2,
+                        SupplierBlockedDays = new List<SupplierBlockedDay>()
+                        {
+                            new SupplierBlockedDay
+                            {
+                                SupplierId = 2,
+                                SupplierBlockedDayId = 3,
+                                Date = new DateTime(2018,03,20)
+                            }
+                        }    
                     },
                     new Supplier
                     {
@@ -71,5 +97,7 @@
                            }.AsQueryable();
             }
         }
+
+        public IQueryable<SupplierBlockedDay> SupplierBlockedDays;
     }
 }

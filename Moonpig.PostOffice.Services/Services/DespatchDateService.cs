@@ -53,7 +53,7 @@ namespace Moonpig.PostOffice.Services
                     throw new ArgumentException($"Product with ID {productId} is currently unavailable", nameof(productIds));
 
                 var leadTime = supplier.LeadTime;
-                var productArrivalDate = CalculateSupplierArrivalDate(orderDate, leadTime);
+                var productArrivalDate = CalculateSupplierArrivalDate(orderDate, leadTime, supplier.SupplierBlockedDays);
 
                 if (productArrivalDate > maxLeadTime)
                     maxLeadTime = productArrivalDate;
@@ -63,12 +63,12 @@ namespace Moonpig.PostOffice.Services
         }
 
         /// <summary>
-        /// Calculates the supplier's arrival date based on the order date and lead time.
+        /// Calculates the supplier's arrival date based on the order date, lead time and supplier blocked days.
         /// </summary>
         /// <param name="orderDate"></param>
         /// <param name="leadTime"></param>
         /// <returns></returns>
-        private DateTime CalculateSupplierArrivalDate(DateTime orderDate, int leadTime)
+        private DateTime CalculateSupplierArrivalDate(DateTime orderDate, int leadTime, List<SupplierBlockedDay> supplierBlockedDays)
         {
             var fullWeeks = leadTime / 5;
             var remainingDays = leadTime % 5;
@@ -79,7 +79,8 @@ namespace Moonpig.PostOffice.Services
             {
                 resultDate = resultDate.AddDays(1);
                 if (resultDate.DayOfWeek != DayOfWeek.Saturday && 
-                    resultDate.DayOfWeek != DayOfWeek.Sunday)
+                    resultDate.DayOfWeek != DayOfWeek.Sunday &&
+                    (supplierBlockedDays == null || !supplierBlockedDays.Any(c => c.Date == resultDate)))
                 {
                     remainingDays--;
                 }
